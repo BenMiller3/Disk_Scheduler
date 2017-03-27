@@ -43,18 +43,49 @@ int main(int argc, char* argv []){
 
 
 int FCFS(int requests[], int position, int direction){
+    int total_requests = sizeof(requests);
+    int head_movements = 0;
 
-    return 0;
+    printf("FCFS DISK SCHEDULING ALGORITHM\n");
+    for(total_requests; (total_requests - 1) >= 0; total_requests--){
+        printf("FCFS - servicing request: %d", requests[total_requests]);
+    }
+
+    return head_movements;
 }
 
 int SSTF(int requests[], int position, int direction){
-    return 0;
+    int total_requests = sizeof(requests);
+    int head_movements = 0;
+
+    printf("SSTF DISK SCHEDULING ALGORITHM\n");
+    for(total_requests; (total_requests - 1) >= 0; total_requests--){
+        printf("SSTF - servicing request: %d", requests[total_requests]);
+    }
+
+    return head_movements;
 }
 
 int SCAN(int requests[], int position, int direction){
-    return 0;
+    int total_requests = sizeof(requests);
+    int head_movements = 0;
+
+    printf("SCAN DISK SCHEDULING ALGORITHM\n");
+    for(total_requests; (total_requests - 1) >= 0; total_requests--){
+        printf("SCAN - servicing request: %d", requests[total_requests]);
+    }
+
+    return head_movements;
 }
 
 int LOOK(int requests[], int position, int direction){
-    return 0;
+    int total_requests = sizeof(requests);
+    int head_movements = 0;
+
+    printf("LOOK DISK SCHEDULING ALGORITHM\n");
+    for(total_requests; (total_requests - 1) >= 0; total_requests--){
+        printf("LOOK - servicing request: %d", requests[total_requests]);
+    }
+
+    return head_movements;
 }
