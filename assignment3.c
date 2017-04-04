@@ -44,13 +44,13 @@ int main(int argc, char* argv []){
         int direction = (argv[2] == "left" || argv[2] == "L") ? 0 : 1;
 
         int fcfs = FCFS(position, sizeof(fcfs_requests)/sizeof(fcfs_requests[0]), direction);
-        int sstf = SSTF(position, sizeof(fcfs_requests)/sizeof(fcfs_requests[0]), direction);
-        //int scan = SCAN(position, sizeof(fcfs_requests)/sizeof(fcfs_requests[0]), direction);
-        //int look = LOOK(position, sizeof(fcfs_requests)/sizeof(fcfs_requests[0]), direction);
+        int sstf = SSTF(position, sizeof(sstf_requests)/sizeof(sstf_requests[0]), direction);
+        //int scan = SCAN(position, sizeof(scan_requests)/sizeof(scan_requests[0]), direction);
+        //int look = LOOK(position, sizeof(look_requests)/sizeof(look_requests[0]), direction);
         
-        show_requests("FCFS", fcfs_requests, fcfs);
-        show_requests("SSTF", sstf_ord, sstf);
-        //show_requests("SCAN", scan_requests, scan);
+        //show_requests("FCFS", fcfs_requests, fcfs);
+        //show_requests("SSTF", sstf_ord, sstf);
+        show_requests("SCAN", scan_ord, scan);
         //show_requests("LOOK", look_requests, look);
 
         return 0;
@@ -89,10 +89,8 @@ int SSTF(int position, int total_requests,  int direction){
         for(i; i < total_requests; i++){
 
                 j = 0;
-                int closest = 401;
+                int closest = 401; // Arbitrarily high so that the requests won't be serviced twice
                 int closest_index = 0;
-
-                printf("THE CURRENT POSITION IS: %d",current_pos);
 
                 for(j; j < total_requests; j++){
                         int next_dist = abs(current_pos - sstf_requests[j]);
