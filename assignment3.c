@@ -1,6 +1,10 @@
 /* Disk Scheduler Simulator - 3SH3 Assignment 3
  * ==============================================
  *
+ *      USAGE: [Initial Disk Head Position] [LEFT | RIGHT]
+ *
+ *      - Initial disk head position must be an integer,
+ *      - LEFT or RIGHT specifies the disk direction
  *
  * By: Benjamin D. Miller
  *      001416516
@@ -41,17 +45,19 @@ int main(int argc, char* argv []){
         int position = atoi(argv[1]);
 
         // left == 0, right == 1
-        int direction = (argv[2] == "left" || argv[2] == "L") ? 0 : 1;
+        int direction = (argv[2][0] == 'L' || argv[2][0] == 'l') ? 0 : 1;
 
+        // Run the algorithms, and compute their total head movements, while changing global array variables
         int fcfs = FCFS(position, sizeof(fcfs_requests)/sizeof(fcfs_requests[0]), direction);
         int sstf = SSTF(position, sizeof(sstf_requests)/sizeof(sstf_requests[0]), direction);
-        //int scan = SCAN(position, sizeof(scan_requests)/sizeof(scan_requests[0]), direction);
-        //int look = LOOK(position, sizeof(look_requests)/sizeof(look_requests[0]), direction);
+        int scan = SCAN(position, sizeof(scan_requests)/sizeof(scan_requests[0]), direction);
+        int look = LOOK(position, sizeof(look_requests)/sizeof(look_requests[0]), direction);
         
-        //show_requests("FCFS", fcfs_requests, fcfs);
-        //show_requests("SSTF", sstf_ord, sstf);
+        // Print the ordered requests, total head movements for each algorithm and format them.
+        show_requests("FCFS", fcfs_requests, fcfs);
+        show_requests("SSTF", sstf_ord, sstf);
         show_requests("SCAN", scan_ord, scan);
-        //show_requests("LOOK", look_requests, look);
+        show_requests("LOOK", look_requests, look);
 
         return 0;
 }
@@ -119,11 +125,70 @@ int SCAN(int position, int total_requests,  int direction){
          */
         int total_moves = 0;
         int current_pos = position;
+        int scanned_index = 0;
 
-        int i = 0;
-        for(i; i < total_requests; i++){
-                total_moves += abs(current_pos - fcfs_requests[i]);
-                current_pos = fcfs_requests[i];
+        // If direction == 0 then the disk is pointing LEFT. Else, it's RIGHT
+        if(direction == 0){
+                // Scanning from current position to the left side of the disk.
+                while(current_pos > 0 && scanned_index < 8){
+                        current_pos--;
+                        total_moves++;
+
+                        int i = 0;
+                        for(i; i < 8; i++){
+                                if(scan_requests[i] == current_pos){
+                                        scan_ord[scanned_index] = current_pos;
+                                        scanned_index++;
+                                        scan_requests[i] = -1;
+                                }
+                        }
+                }
+
+                // Now scan from the left side of the disk to the right, or until all positions have been serviced.
+                while(current_pos < 200 && scanned_index < 8){
+                        current_pos++;
+                        total_moves++;
+
+                        int i = 0;
+                        for(i; i < 8; i++){
+                                if(scan_requests[i] == current_pos){
+                                        scan_ord[scanned_index] = current_pos;
+                                        scanned_index++;
+                                        scan_requests[i] = -1;
+                                }
+                        }
+                }
+        }
+        else{
+                // Scan from current position to the right.
+                while(current_pos < 200 && scanned_index < 8){
+                        current_pos++;
+                        total_moves++;
+
+                        int i = 0;
+                        for(i; i < 8; i++){
+                                if(scan_requests[i] == current_pos){
+                                        scan_ord[scanned_index] = current_pos;
+                                        scanned_index++;
+                                        scan_requests[i] = -1;
+                                }
+                        }
+                }
+
+                // scan from the right to the left, or until all jobs have been serviced.
+                while(current_pos > 0 && scanned_index < 8){
+                        current_pos--;
+                        total_moves++;
+
+                        int i = 0;
+                        for(i; i < 8; i++){
+                                if(scan_requests[i] == current_pos){
+                                        scan_ord[scanned_index] = current_pos;
+                                        scanned_index++;
+                                        scan_requests[i] = -1;
+                                }
+                        }
+                }
         }
 
         return total_moves;
@@ -136,11 +201,86 @@ int LOOK(int position, int total_requests,  int direction){
          */
         int total_moves = 0;
         int current_pos = position;
+        int scanned_index = 0;
+
+        // This algorithm is the exact same as SCAN with one minor difference.
+        // Rather than going to the ends of the disk, it only goes as far as it needs to be serviced.
+        // To compensate this, the min and max values in the requests array will be the upper and lower bounds.
+        int lower_bound = look_requests[0];
+        int upper_bound = look_requests[0];
 
         int i = 0;
-        for(i; i < total_requests; i++){
-                total_moves += abs(current_pos - fcfs_requests[i]);
-                current_pos = fcfs_requests[i];
+        for(i; i < 8; i++){
+                if(look_requests[i] > upper_bound){
+                        upper_bound = look_requests[i];
+                }
+                else if(look_requests[i] < lower_bound){
+                        lower_bound = look_requests[i];
+                }
+        }
+
+        // If direction == 0 then the disk is pointing LEFT. Else, it's RIGHT
+        if(direction == 0){
+                // Scanning from current position to as far left as we need to service.
+                while(current_pos > lower_bound && scanned_index < 8){
+                        current_pos--;
+                        total_moves++;
+
+                        int i = 0;
+                        for(i; i < 8; i++){
+                                if(look_requests[i] == current_pos){
+                                        look_ord[scanned_index] = current_pos;
+                                        scanned_index++;
+                                        look_requests[i] = -1;
+                                }
+                        }
+                }
+
+                // Now scan from the left side of the disk to the right, or until all positions have been serviced.
+                while(current_pos < upper_bound && scanned_index < 8){
+                        current_pos++;
+                        total_moves++;
+
+                        int i = 0;
+                        for(i; i < 8; i++){
+                                if(look_requests[i] == current_pos){
+                                        look_ord[scanned_index] = current_pos;
+                                        scanned_index++;
+                                        look_requests[i] = -1;
+                                }
+                        }
+                }
+        }
+        else{
+                // Scan from current position to the right.
+                while(current_pos < upper_bound && scanned_index < 8){
+                        current_pos++;
+                        total_moves++;
+
+                        int i = 0;
+                        for(i; i < 8; i++){
+                                if(look_requests[i] == current_pos){
+                                        look_ord[scanned_index] = current_pos;
+                                        scanned_index++;
+                                        look_requests[i] = -1;
+                                }
+                        }
+                }
+
+                // scan from the right to the left, or until all jobs have been serviced.
+                while(current_pos > lower_bound && scanned_index < 8){
+                        current_pos--;
+                        total_moves++;
+
+                        int i = 0;
+                        for(i; i < 8; i++){
+                                if(look_requests[i] == current_pos){
+                                        look_ord[scanned_index] = current_pos;
+                                        scanned_index++;
+                                        look_requests[i] = -1;
+                                }
+                        }
+                }
         }
 
         return total_moves;
