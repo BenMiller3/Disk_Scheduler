@@ -10,7 +10,6 @@
  *      001416516
  *      millebd
  */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
@@ -57,7 +56,7 @@ int main(int argc, char* argv []){
         show_requests("FCFS", fcfs_requests, fcfs);
         show_requests("SSTF", sstf_ord, sstf);
         show_requests("SCAN", scan_ord, scan);
-        show_requests("LOOK", look_requests, look);
+        show_requests("LOOK", look_ord, look);
 
         return 0;
 }
@@ -236,7 +235,7 @@ int LOOK(int position, int total_requests,  int direction){
                         }
                 }
 
-                // Now scan from the left side of the disk to the right, or until all positions have been serviced.
+                // Now scan to the right, or until all positions have been serviced.
                 while(current_pos < upper_bound && scanned_index < 8){
                         current_pos++;
                         total_moves++;
