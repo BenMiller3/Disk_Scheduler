@@ -145,7 +145,7 @@ int SCAN(int position, int total_requests,  int direction){
                 }
 
                 // Now scan from the left side of the disk to the right, or until all positions have been serviced.
-                while(current_pos < 200 && scanned_index < total_indicies){
+                while(current_pos < 199 && scanned_index < total_indicies){
                         current_pos++;
                         total_moves++;
 
